@@ -1,14 +1,16 @@
 var asArray = require("../util/asArray")
+var realValue = require("../util/realValue")
 
 module.exports = function( xml ){
   if( !xml.preprocess ) return null
   var pre = {}
-  pre.less = processRules(xml.preprocess, "less", "css", "../processors/less")
+  pre.less = processRules(xml.preprocess, "less", "css", "../processors/less", "../processors/autoprefixer")
+  pre.stylus = processRules(xml.preprocess, "stylus", "css", "../processors/stylus", "../processors/autoprefixer")
   pre.browserify = processRules(xml.preprocess, "browserify", "js", "../processors/browserify")
   return pre
 }
 
-function processRules( preprocessors, preprocessorName, targetsName, preprocessorModule ){
+function processRules( preprocessors, preprocessorName, targetsName, preprocessorModule, postProcessorModule ){
   var preprocessor = preprocessors[preprocessorName]
   if( !preprocessor ) return null
   var pairs = asArray(preprocessor, targetsName)
@@ -19,7 +21,8 @@ function processRules( preprocessors, preprocessorName, targetsName, preprocesso
   })
   return {
     render: require(preprocessorModule),
-    options: preprocessor,
+    postProcess: require(postProcessorModule),
+    options: realValue.obj(preprocessor),
     css: pairs
   }
 }

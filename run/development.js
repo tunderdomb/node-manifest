@@ -6,6 +6,7 @@ var fs = require("fs")
 var path = require("path")
 var writeFile = require("../util/writeFile")
 var glob = require("glob")
+var async = require("async")
 
 module.exports = function( app, manifest ){
   reserve(manifest.env.port.start, 2, function( serverPort, livereloadPort ){
@@ -61,53 +62,67 @@ function setupPreprocessors( manifest ){
   if( less ){
     cratePreprocessorWatcher(less.css, function( filepath, destWriter ){
       less.render(filepath, less.options, destWriter)
+    }, function( content ){
+      return stylus.postProcess(content, less.options.browsers)
     })
-//    less.css.forEach(function( css ){
-//      gaze(css.src, function( err, watcher ){
-//        if( err ){
-//          console.log("File watching failed for preprocessing", err)
-//          return
-//        }
-//        watcher.on('changed', function( filepath ){
-//          less.render(filepath, less.options, createDest(filepath, css.dest, css.root))
-//        })
-//      })
-//    })
+  }
+  var stylus = manifest.preprocess.stylus
+  if( stylus ){
+    cratePreprocessorWatcher(stylus.css, function( filepath, destWriter ){
+      stylus.render(filepath, stylus.options, destWriter)
+    }, function( content ){
+      debugger
+      return stylus.postProcess(content, stylus.options.browsers)
+    })
   }
 }
 
-function cratePreprocessorWatcher( pairs, preprocess ){
+function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
   pairs.forEach(function( options ){
-    var render
     gaze(options.watch||options.src, function( err, watcher ){
       if( err ){
         console.log("File watching failed for preprocessing", err)
         return
       }
+      var rendering = false
       watcher.on('changed', function( filepath ){
-        if( options.watch ){
-          glob(options.src, function( err, files ){
-            if( err ){
-              console.log("Error collecting preprocessables ", err)
-              return
+        function render( filepath, done ){
+          var write = createDest(filepath, options.dest, options.root, done)
+          preProcess(filepath, function( err, contents ){
+            if( err ) {
+              return console.log("Error during preprocessing '"+filepath+"'", err)
             }
-            files.forEach(function( filepath ){
-              preprocess(filepath, createDest(filepath, options.dest, options.root))
+            debugger
+            if( postProcess ) contents = postProcess(contents)
+            write(err, contents)
+          })
+        }
+        if( options.watch ){
+          // when multiple files would trigger rendering
+          // this prevents the glob to run more than once
+          if( rendering ) return
+          rendering = true
+          glob(options.src, function( err, files ){
+            if( err ) return console.log("Error collecting preprocessables ", err)
+            async.each(files, render, function(  ){
+              // re-allow rendering when everything is finished
+              rendering = false
             })
           })
         }
         else {
-          preprocess(filepath, createDest(filepath, options.dest, options.root))
+          render(filepath)
         }
       })
     })
   })
 }
 
-function createDest( src, dest, root ){
+function createDest( src, dest, root, cb ){
   return function( err, contents ){
     if( err ) {
       console.log("Error during preprocessing '"+src+"'", err)
+      cb && cb()
       return
     }
     root = root || ""
@@ -118,6 +133,7 @@ function createDest( src, dest, root ){
       if( err ) {
         console.log("Error during preprocessing '"+src+"'", err)
       }
+      cb && cb()
     })
   }
 }
