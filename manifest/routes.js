@@ -38,7 +38,7 @@ function createContext( xml, route ){
 
   if( !context ) {
     route.context = function( superLocal ){
-      return clone(globalContext, superLocal)
+      return merge.apply(null, [globalContext].concat([].slice.call(arguments)))
     }
     return
   }
