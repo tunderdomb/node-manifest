@@ -3,7 +3,7 @@
   "version": "0.0.7",
   "description": "NodeJs plug-n-play application framework",
   "main": "index.js",
-  "author": "",
+  "author": "tunderdomb@gmail.com",
   "license": "MIT",
   "dependencies": {
     "xml2js": "0.4.4",
@@ -42,5 +42,12 @@
     "nodejs",
     "app",
     "framework"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tunderdomb/node-manifest.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tunderdomb/node-manifest/issues"
+  }
 }
