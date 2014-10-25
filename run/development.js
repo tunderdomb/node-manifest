@@ -10,7 +10,6 @@ var async = require("async")
 
 module.exports = function( app, manifest ){
   reserve(manifest.env.port.start, 2, function( serverPort, livereloadPort ){
-    app.set("manifest", manifest)
     setupLiveReload(manifest, serverPort, livereloadPort)
     setupPreprocessors(manifest)
     setupServer(app, manifest, serverPort)
