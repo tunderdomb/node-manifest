@@ -9,6 +9,7 @@ function Manifest( xml ){
 
   this.env = require("./manifest/env")(xml)
   this.livereload = require("./manifest/livereload")(xml)
+  this.monitor = require("./manifest/monitor")(xml)
   this.preprocess = require("./manifest/preprocess")(xml)
 
   this.site = xml.site

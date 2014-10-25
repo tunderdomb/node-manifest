@@ -1,5 +1,5 @@
 var reserve = require("portreserver")
-var spawn = require("child_process").spawn
+//var spawn = require("child_process").spawn
 var browserSync = require("browser-sync")
 var gaze = require('gaze')
 var fs = require("fs")
@@ -63,7 +63,7 @@ function setupPreprocessors( manifest ){
     cratePreprocessorWatcher(less.css, function( filepath, destWriter ){
       less.render(filepath, less.options, destWriter)
     }, function( content ){
-      return stylus.postProcess(content, less.options.browsers)
+      return less.postProcess(content, less.options.browsers)
     })
   }
   var stylus = manifest.preprocess.stylus
@@ -71,7 +71,6 @@ function setupPreprocessors( manifest ){
     cratePreprocessorWatcher(stylus.css, function( filepath, destWriter ){
       stylus.render(filepath, stylus.options, destWriter)
     }, function( content ){
-      debugger
       return stylus.postProcess(content, stylus.options.browsers)
     })
   }
@@ -90,10 +89,20 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
           var write = createDest(filepath, options.dest, options.root, done)
           preProcess(filepath, function( err, contents ){
             if( err ) {
-              return console.log("Error during preprocessing '"+filepath+"'", err)
+              console.log("Error during preprocessing '"+filepath+"'", err)
+              // that didn't go well, but at least call back so rendering won't halt
+              return done()
             }
-            debugger
-            if( postProcess ) contents = postProcess(contents)
+            if( postProcess ){
+              try{
+                contents = postProcess(contents)
+              }
+              catch( e ){
+                // post processing is sync so don't let it make the rendering queue stuck
+                return done()
+                console.log("Error during preprocessing '"+filepath+"'", err)
+              }
+            }
             write(err, contents)
           })
         }
@@ -103,7 +112,9 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
           if( rendering ) return
           rendering = true
           glob(options.src, function( err, files ){
-            if( err ) return console.log("Error collecting preprocessables ", err)
+            if( err ) {
+              return console.log("Error collecting preprocessables ", err)
+            }
             async.each(files, render, function(  ){
               // re-allow rendering when everything is finished
               rendering = false
