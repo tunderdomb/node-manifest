@@ -1,3 +1,4 @@
+var path = require("path")
 var asArray = require("../util/asArray")
 module.exports = function( xml ){
   if( !xml.livereload ) return null
@@ -6,7 +7,7 @@ module.exports = function( xml ){
   if( !patterns.length ) return null
   lr.watch = patterns.map(function( watch ){
     if( !watch.pattern ) throw new Error("Watch condition is missing pattern")
-    return watch.pattern
+    return path.resolve(watch.pattern)
   })
   return lr
 }

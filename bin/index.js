@@ -4,19 +4,19 @@ var path = require("path")
 //var async = require("async")
 var argv = require('minimist')(process.argv.slice(2))
 
-//console.log("args", argv)
-
 var args = argv._
 delete argv._
 
 require("../manifestFile")(function( manifest ){
-  console.log([
-    "manifest.xml"
-  ].concat(manifest.monitor.watch))
-  run(manifest)
-})
 
-function run( manifest ){
+  var watch = [
+    "manifest.xml"
+  ]
+    .concat(manifest.monitor.watch)
+    .map(function( p ){
+      return path.resolve(p)
+    })
+
   var nodemonSettings = {
     "script": path.join(__dirname, "../index.js"),
     "restartable": "rs",
@@ -29,9 +29,7 @@ function run( manifest ){
     "execMap": {
       "js": "node"
     },
-    "watch": [
-      "manifest.xml"
-    ].concat(manifest.monitor.watch),
+    "watch": watch,
     "env": argv,
     "ext": "js json",
     "nodeArgs": ["--debug"].concat(args)
@@ -47,4 +45,4 @@ function run( manifest ){
   }).on("restart", function ( files ){
     console.log("App restarted due to: ", files)
   })
-}
+})
