@@ -8,6 +8,7 @@ module.exports = function( xml ){
     || argv.dev
     || realValue(run.development)
   env.open = argv.open || realValue(run.open) || false
+  env.listen = run.listen == undefined || realValue(run.open) == true
   env.port = run.port || {}
   env.port.start = realValue(env.port.start) || 8000
   return env

@@ -1,5 +1,4 @@
 module.exports = function( app, manifest ){
-  require("../server")(app, manifest)
   if( process.env.PORT ){
     setupServer(app, manifest, process.env.PORT)
   }
@@ -12,7 +11,9 @@ module.exports = function( app, manifest ){
 
 function setupServer( app, manifest, serverPort ){
   require("../server")(app, manifest)
-  app.listen(serverPort, function(){
-    console.log("app listening on %s", serverPort)
-  })
+  if( manifest.env.listen ) {
+    app.listen(serverPort, function(){
+      console.log("app listening on %s", serverPort)
+    })
+  }
 }

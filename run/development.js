@@ -18,12 +18,14 @@ module.exports = function( app, manifest ){
 
 function setupServer( app, manifest, serverPort ){
   require("../server")(app, manifest)
-  app.listen(serverPort, function(){
-    console.log("app listening on %s", serverPort)
-    if( manifest.env.open ){
-      require("open")("http://" + reserve.IP + ":" + serverPort)
-    }
-  })
+  if( manifest.env.listen ) {
+    app.listen(serverPort, function(){
+      console.log("app listening on %s", serverPort)
+      if( manifest.env.open ){
+        require("open")("http://" + reserve.IP + ":" + serverPort)
+      }
+    })
+  }
 }
 
 function livereloadScriptPath( livereloadPort ){
