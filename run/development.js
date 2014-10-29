@@ -61,7 +61,7 @@ function setupPreprocessors( manifest ){
   if( !manifest.preprocess ) return
   var less = manifest.preprocess.less
   if( less ){
-    cratePreprocessorWatcher(less.css, function( filepath, destWriter ){
+    cratePreprocessorWatcher(less.pairs, function( filepath, destWriter ){
       less.render(filepath, less.options, destWriter)
     }, function( content ){
       return less.postProcess(content, less.options.browsers)
@@ -69,10 +69,16 @@ function setupPreprocessors( manifest ){
   }
   var stylus = manifest.preprocess.stylus
   if( stylus ){
-    cratePreprocessorWatcher(stylus.css, function( filepath, destWriter ){
+    cratePreprocessorWatcher(stylus.pairs, function( filepath, destWriter ){
       stylus.render(filepath, stylus.options, destWriter)
     }, function( content ){
       return stylus.postProcess(content, stylus.options.browsers)
+    })
+  }
+  var browserify = manifest.preprocess.browserify
+  if( browserify ){
+    cratePreprocessorWatcher(browserify.pairs, function( filepath, destWriter ){
+      browserify.render(filepath, browserify.options, destWriter)
     })
   }
 }
@@ -86,9 +92,11 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
       }
       var rendering = false
       watcher.on('changed', function( filepath ){
+        console.log("changed", filepath)
         function render( filepath, done ){
-          var write = createDest(filepath, options.dest, options.root, done)
-          preProcess(filepath, function( err, contents ){
+          console.log("preprocess", filepath)
+          var write = createDest(filepath, options.dest, options.ext, options.root, done)
+          preProcess(filepath, function destWriter( err, contents ){
             if( err ) {
               console.log("Error during preprocessing '"+filepath+"'", err)
               // that didn't go well, but at least call back so rendering won't halt
@@ -100,8 +108,8 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
               }
               catch( e ){
                 // post processing is sync so don't let it make the rendering queue stuck
+                console.log("Error during post processing '"+filepath+"'", e)
                 return done()
-                console.log("Error during preprocessing '"+filepath+"'", err)
               }
             }
             write(err, contents)
@@ -110,7 +118,10 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
         if( options.watch ){
           // when multiple files would trigger rendering
           // this prevents the glob to run more than once
-          if( rendering ) return
+          if( rendering ) {
+            console.log("preprocessor is busy")
+            return
+          }
           rendering = true
           glob(options.src, function( err, files ){
             if( err ) {
@@ -130,7 +141,7 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
   })
 }
 
-function createDest( src, dest, root, cb ){
+function createDest( src, dest, ext, root, cb ){
   return function( err, contents ){
     if( err ) {
       console.log("Error during preprocessing '"+src+"'", err)
@@ -139,7 +150,7 @@ function createDest( src, dest, root, cb ){
     }
     root = root || ""
     var file = src.replace(path.join(process.cwd(), root), "")
-    file = path.basename(file, path.extname(file))+".css"
+    file = path.basename(file, path.extname(file))+"."+ext.replace(/^\./, "")
     dest = path.join(dest, file)
     writeFile(dest, contents, function( err ){
       if( err ) {

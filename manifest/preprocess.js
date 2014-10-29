@@ -1,3 +1,4 @@
+var path = require("path")
 var asArray = require("../util/asArray")
 var realValue = require("../util/realValue")
 
@@ -18,11 +19,18 @@ function processRules( preprocessors, preprocessorName, targetsName, preprocesso
   pairs.forEach(function( pair ){
     if( !pair.src ) throw new Error("Preprocessor rule is missing 'src' attribute")
     if( !pair.dest ) throw new Error("Preprocessor rule is missing 'dest' attribute")
+    if( Array.isArray(pair.watch) ){
+      pair.watch = pair.watch.map(function( watch ){
+        if( !watch.pattern ) throw new Error("Watch condition is missing pattern")
+        return path.resolve(watch.pattern)
+      })
+    }
+    pair.ext = pair.ext || targetsName
   })
   return {
     render: require(preprocessorModule),
-    postProcess: require(postProcessorModule),
+    postProcess: postProcessorModule && require(postProcessorModule),
     options: realValue.obj(preprocessor),
-    css: pairs
+    pairs: pairs
   }
 }
