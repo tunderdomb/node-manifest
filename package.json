@@ -18,7 +18,7 @@
     "through2": "0.6.2",
     "stylus": "0.49.1",
     "less": "1.7.5",
-    "dustin": "1.2.5",
+    "dustin": "1.2.6",
     "connect-inject": "0.3.2",
     "portreserver": "1.0.1",
     "browser-sync": "1.5.7",
