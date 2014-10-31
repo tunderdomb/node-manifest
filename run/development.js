@@ -90,6 +90,10 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
         console.log("File watching failed for preprocessing", err)
         return
       }
+      watcher.on('added', function( filepath ){
+        console.log("added", filepath)
+        watcher.add(filepath)
+      })
       var rendering = false
       watcher.on('changed', function( filepath ){
         console.log("changed", filepath)
