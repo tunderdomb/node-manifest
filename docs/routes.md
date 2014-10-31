@@ -109,9 +109,9 @@ and what you pass back from a handler (discussed below).
 
 The handler will be required and should export a function that returns another function itself.
 The exported function will be called with the express app instance, the manifest data,
-and the infividual page data from the manifest that belongs to this route.
+and the individual page data from the manifest that belongs to this route.
 
-The returned function will be called when the page renderes,
+The returned function will be called when the page renders,
 and is passed all the arguments any other middleware receives, plus a callback function.
 
 You may call the callback to return control to the bootstrap,
@@ -122,11 +122,23 @@ If there's no template defined on this route,
 this operation can't conclude so an error is thrown.
 
 ```js
-module.exports = function( app, manifest, page ){
+module.exports = function( app, manifest, page, express ){
   return function( req, res, next, done ){
     done(null, {})
   }
 }
+```
+
+If the handler does not return a middleware, the router will do nothing.
+But this way you can define routes any way you want.
+Since the 4th argument is express, you can use it however you want.
+
+Note that even if your handler returns a middleware, if there's not url defined,
+the router does nothing in this case too. Internally it looks like this:
+
+```js
+handler = handler(app, manifest, route, express)
+if( route.url && typeof handler == "function" ){...}
 ```
 
 ### Error routes

@@ -1,3 +1,4 @@
+var express = require("express")
 module.exports = function( app, manifest ){
   //  debugger
   manifest.routes.forEach(function( route ){
@@ -17,10 +18,9 @@ module.exports = function( app, manifest ){
     }
 
     if( handler ){
-      // custom request handler
-      if( route.url ){
-        // tied to a url
-        handler = handler(app, manifest, route)
+      handler = handler(app, manifest, route, express)
+      if( route.url && typeof handler == "function" ){
+        // url is present and the handler returned a middleware
         app[method](route.url, function( req, res, next ){
           handler(req, res, next, function( err, context ){
             if( err ) return next(err)
@@ -36,10 +36,6 @@ module.exports = function( app, manifest ){
             }
           })
         })
-      }
-      else{
-        // or defines an absolute custom logic
-        app[method](handler(app, manifest, route))
       }
     }
     else if( template ){

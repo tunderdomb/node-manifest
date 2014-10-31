@@ -93,6 +93,7 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
       var rendering = false
       watcher.on('changed', function( filepath ){
         console.log("changed", filepath)
+        // TODO: trigger rendering only if file hasn't changed (stat cache)
         function render( filepath, done ){
           console.log("preprocess", filepath)
           var write = createDest(filepath, options.dest, options.ext, options.root, done)

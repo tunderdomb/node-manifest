@@ -25,6 +25,8 @@ function createRoute( xml, routes, route ){
       route.handler = require(toCwd(route.handler))
     }
     catch( e ){
+      // relay why this is failed
+      console.error(e)
       throw new Error("Invalid handler for route '"+route.name+"'")
     }
   }

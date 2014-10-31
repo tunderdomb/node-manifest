@@ -1,6 +1,6 @@
 {
   "name": "node-manifest",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "NodeJs plug-n-play application framework",
   "main": "index.js",
   "author": "tunderdomb@gmail.com",
