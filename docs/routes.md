@@ -122,7 +122,7 @@ If there's no template defined on this route,
 this operation can't conclude so an error is thrown.
 
 ```js
-module.exports = function( app, manifest, page, express ){
+module.exports = function( app, manifest, page ){
   return function( req, res, next, done ){
     done(null, {})
   }
@@ -131,13 +131,13 @@ module.exports = function( app, manifest, page, express ){
 
 If the handler does not return a middleware, the router will do nothing.
 But this way you can define routes any way you want.
-Since the 4th argument is express, you can use it however you want.
+Since the manifest object holds a reference to express (`manifest.express`), you can use it however you want.
 
 Note that even if your handler returns a middleware, if there's not url defined,
 the router does nothing in this case too. Internally it looks like this:
 
 ```js
-handler = handler(app, manifest, route, express)
+handler = handler(app, manifest, route)
 if( route.url && typeof handler == "function" ){...}
 ```
 

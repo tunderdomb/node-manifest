@@ -1,4 +1,3 @@
-var express = require("express")
 module.exports = function( app, manifest ){
   //  debugger
   manifest.routes.forEach(function( route ){
@@ -18,7 +17,7 @@ module.exports = function( app, manifest ){
     }
 
     if( handler ){
-      handler = handler(app, manifest, route, express)
+      handler = handler(app, manifest, route)
       if( route.url && typeof handler == "function" ){
         // url is present and the handler returned a middleware
         app[method](route.url, function( req, res, next ){

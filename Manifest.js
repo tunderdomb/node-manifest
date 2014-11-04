@@ -13,6 +13,8 @@ function Manifest( xml ){
   this.preprocess = require("./manifest/preprocess")(xml)
 
   this.site = xml.site
-}
 
-Manifest.prototype.get = function( field ){}
+  this.async = require("async")
+  this.glob = require("glob")
+  this.express = require("express")
+}
