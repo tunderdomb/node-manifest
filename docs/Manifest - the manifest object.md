@@ -1,5 +1,7 @@
-module.exports = Manifest
+Manifest - the manifest object
+========
 
+```js
 function Manifest( xml ){
   this.routes = require("./manifest/routes")(xml)
   this.request = require("./manifest/request")(xml)
@@ -22,3 +24,4 @@ function Manifest( xml ){
   this.bodyParser = require('body-parser')
   this.multer = require('multer')
 }
+```

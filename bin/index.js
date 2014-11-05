@@ -7,6 +7,8 @@ var argv = require('minimist')(process.argv.slice(2))
 var args = argv._
 delete argv._
 
+argv.AUTO_RUN = true
+
 require("../manifestFile")(function( manifest ){
 
   var watch = [
