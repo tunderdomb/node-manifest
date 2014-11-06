@@ -22,3 +22,12 @@ function Manifest( xml ){
   this.bodyParser = require('body-parser')
   this.multer = require('multer')
 }
+
+Manifest.prototype.locals = function(  ){
+  var json = JSON.stringify(this)
+  json = JSON.parse(json)
+  return function( req, res, next ){
+    res.locals.manifest = json
+    next()
+  }
+}
