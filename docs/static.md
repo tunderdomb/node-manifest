@@ -20,6 +20,24 @@ Internally `st` is used, so the options map 1:1.
 You can defined default options on the `<static>` tag itself,
 and overwrite defaults on each individual `<content>` tag too.
 
+#### name
+
+A name for this resource,
+you can use it to reference the static descriptor in templates
+or other places.
+
+```xml
+<content name="something" url="/asd" path="asd" cache="false" />
+```
+
+```js
+manifest.static.something
+manifest.static.something.name
+manifest.static.something.path
+manifest.static.something.url
+...
+```
+
 #### index
 #### gzip
 
