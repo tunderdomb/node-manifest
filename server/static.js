@@ -1,5 +1,4 @@
 var path = require("path")
-var mime = require('mime')
 var url = require('url')
 var express = require("express")
 var st = require("st")
