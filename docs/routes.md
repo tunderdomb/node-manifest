@@ -152,3 +152,23 @@ if( route.url && typeof handler == "function" ){...}
 Error routes are treated differently on more ways.
 You define an error number that represents the status code of the error it renders.
 Furthermore error routes are assigned after every other route and static middleware.
+
+
+### Named routes
+
+You can name routes so they can be referenced from
+templates and code.
+
+```xml
+<routes>
+  <route name="something" url="/" template="pages/index" />
+</routes>
+```
+
+```js
+manifest.routes.something
+manifest.routes.something.url
+manifest.routes.something.template
+manifest.routes.something.handler
+...
+```
