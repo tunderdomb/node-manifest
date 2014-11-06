@@ -1,14 +1,18 @@
 var asArray = require("../util/asArray")
-var clone = require("../util/clone")
 var merge = require("../util/merge")
 var toCwd = require("../util/toCwd")
 
+// when converting to json,
+// subclassing Array helps keep named references
+function Routes(  ){}
+Routes.prototype = []
+
 module.exports = function routes( xml ){
-  var routes = asArray(xml.routes, "route")
-  return routes.reduce(function( routes, route ){
+  return asArray(xml.routes, "route").reduce(function( routes, route ){
+    routes.push(route)
     createRoute(xml, routes, route)
     return routes
-  }, routes)
+  }, new Routes())
 }
 
 function createRoute( xml, routes, route ){
