@@ -11,10 +11,11 @@ module.exports = function( xml ){
   env.listen = run.listen == undefined || realValue(run.open) == true
   env.port = run.port || {}
   env.port.start = realValue(env.port.start) || 8000
-  env.entryTimeout = realValue(run.entryTimeout) || 5000
+  var entry = run.entry || {}
+  env.entryTimeout = realValue(entry.timeout) || 5000
   if( run.entry ){
     try{
-      env.entry = require(path.resolve(run.entry))
+      env.entry = require(path.resolve(entry.file))
     }
     catch( e ){
       console.error("Invalid entry point", run.entry)
