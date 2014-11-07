@@ -11,9 +11,14 @@ require("node-manifest")(function( app, manifest ){
 })
 ```
 
-The callback is called right before setting up the server.
+The callback is called right before setting up the server,
+right after the entry point (if defined) is finished.
 So if you want to change any value on the manifest object
 before they take effect, this is the time.
+
+Note that you can also do that in the entry point file,
+but if you don't need async logic to run,
+you can simply leverage this function instead.
 
 ## From command line
 

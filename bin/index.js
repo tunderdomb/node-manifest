@@ -7,7 +7,7 @@ var argv = require('minimist')(process.argv.slice(2))
 var args = argv._
 delete argv._
 
-argv.AUTO_RUN = true
+var NODE_ENV = argv.development ? "development" : "production"
 
 require("../manifestFile")(function( manifest ){
 
@@ -32,7 +32,10 @@ require("../manifestFile")(function( manifest ){
       "js": "node"
     },
     "watch": watch,
-    "env": argv,
+    "env": {
+      AUTO_RUN: true,
+      NODE_ENV: NODE_ENV
+    },
     "ext": "js json",
     "nodeArgs": ["--debug"].concat(args)
   }
