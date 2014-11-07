@@ -4,7 +4,9 @@ var path = require("path")
 module.exports = function( xml ){
   var run = xml.run || {}
   var env = {}
-  env.development = process.env.NODE_ENV == "development"
+  env.development = process.env.NODE_ENV == "production"
+    ? false
+    : process.env.NODE_ENV == "development"
     || argv.development
     || realValue(run.development)
   env.open = argv.open || realValue(run.open) || false

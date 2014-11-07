@@ -7,7 +7,7 @@ var argv = require('minimist')(process.argv.slice(2))
 var args = argv._
 delete argv._
 
-var NODE_ENV = argv.development ? "development" : "production"
+var NODE_ENV = argv.production ? "production" : "development"
 
 require("../manifestFile")(function( manifest ){
 
