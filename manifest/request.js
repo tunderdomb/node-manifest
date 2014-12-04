@@ -4,8 +4,8 @@ module.exports = function( xml ){
   var request = {}
   request.cookie = parseOptions(xml.cookie, {})
   request.json = parseOptions(xml.json, {})
-  request.urlencoded = parseOptions(xml.cookie, {extended: true})
-  request.multipart = parseOptions(xml.cookie, {inMemory: true})
+  request.urlencoded = parseOptions(xml.urlencoded, {extended: true})
+  request.multipart = parseOptions(xml.multipart, {inMemory: true})
   return request
 }
 
