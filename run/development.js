@@ -94,7 +94,7 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
       })
       var rendering = false
       watcher.on('changed', function( filepath ){
-        console.log("changed", filepath)
+        //console.log("changed", filepath)
         // TODO: trigger rendering only if file hasn't changed (stat cache)
         function render( filepath, done ){
           console.log("preprocess", filepath)
@@ -122,7 +122,7 @@ function cratePreprocessorWatcher( pairs, preProcess, postProcess ){
           // when multiple files would trigger rendering
           // this prevents the glob to run more than once
           if( rendering ) {
-            console.log("preprocessor is busy")
+            //console.log("preprocessor is busy")
             return
           }
           rendering = true

@@ -11,7 +11,6 @@ var NODE_ENV = argv.production ? "production" : "development"
 
 require("../manifestFile")(function( manifest ){
 
-  console.log(manifest.monitor.watch)
   var watch = [
     "manifest.xml"
   ]
